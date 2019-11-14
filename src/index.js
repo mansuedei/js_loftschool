@@ -12,8 +12,8 @@
 
  Другими словами: функция должна возвращать в неизменном виде то, что поступает ей на вход
  */
-function returnFirstArgument(a) {
-    return a;
+function returnFirstArgument(arg) {
+    return arg;
 }
 
 /*
@@ -75,9 +75,7 @@ function returnFnResult(fn) {
 
 function returnCounter(x = 0) {
     return function counter() {
-        x = x + 1;
-
-        return x;
+        return (x = ++x);
     };
 }
 
@@ -105,8 +103,8 @@ function returnCounter(x = 0) {
 //     return Array.from(arguments);
 // }
 
-function returnArgumentsArray(...a) {
-    return a;
+function returnArgumentsArray(...args) {
+    return args;
 }
 
 /*
