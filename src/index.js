@@ -16,7 +16,7 @@ function returnFirstArgument(arg) {
     return arg;
 }
 
-/*
+/* ...
  Задание 2:
 
  2.1: Функция должна возвращать сумму переданных аргументов
