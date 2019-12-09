@@ -37,6 +37,24 @@ const homeworkContainer = document.querySelector('#homework-container');
  https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json
  */
 function loadTowns() {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+
+        xhr.open(
+            'GET',
+            'https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json'
+        );
+        xhr.send();
+        xhr.addEventListener('load', () => {
+            if (xhr.status >= 400) {
+                reject('Error');
+            } else {
+                let result = JSON.parse(xhr.responseText);
+
+                resolve(result.sort((a, b) => a.name.localeCompare(b.name)));
+            }
+        });
+    });
 }
 
 /*
@@ -50,8 +68,43 @@ function loadTowns() {
    isMatching('Moscow', 'SCO') // true
    isMatching('Moscow', 'Moscov') // false
  */
+var towns = [];
+
 function isMatching(full, chunk) {
+    const myRe = new RegExp(chunk, 'i');
+    const myBoolean = myRe.test(full);
+
+    return myBoolean;
 }
+
+function addTowns(array) {
+    const fragment = document.createDocumentFragment();
+
+    for (const town of array) {
+        if (
+            isMatching(town.name, filterInput.value) &&
+			filterInput.value.length > 0
+        ) {
+            const block = document.createElement('div');
+
+            block.innerText = town.name;
+            fragment.appendChild(block);
+        }
+    }
+
+    filterResult.prepend(fragment);
+}
+
+function reload() {
+    loadTowns().then(result => {
+        towns = result;
+
+        loadingBlock.style.display = 'none';
+        filterBlock.style.display = 'block';
+    });
+}
+
+reload();
 
 /* Блок с надписью "Загрузка" */
 const loadingBlock = homeworkContainer.querySelector('#loading-block');
@@ -63,10 +116,9 @@ const filterInput = homeworkContainer.querySelector('#filter-input');
 const filterResult = homeworkContainer.querySelector('#filter-result');
 
 filterInput.addEventListener('keyup', function() {
+    filterResult.innerHTML = '';
+    addTowns(towns);
     // это обработчик нажатия кливиш в текстовом поле
 });
 
-export {
-    loadTowns,
-    isMatching
-};
+export { loadTowns, isMatching };
